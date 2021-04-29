@@ -1,2 +1,0 @@
-"step","time","expression","changed"
-1,2017-10-03 08:35:18,"modify_so(if (height < mean(height)) height <- mean(height))",TRUE

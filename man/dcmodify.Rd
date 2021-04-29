@@ -4,13 +4,8 @@
 \name{dcmodify}
 \alias{dcmodify}
 \alias{dcmodify-package}
-\alias{dcmodify-package}
 \title{Data Modification By Modifying Rules}
 \description{
-Data Modification By Modifying Rules
-}
-\section{Introduction}{
-
 Data often contain errors and missing data. Experts can often correct
 commonly occuring errors based on simple conditional rules. This package
 facilitates the expression, management, and application of such rules on data
@@ -31,4 +26,3 @@ introductory vignette
 
 \code{vignette("introduction",package="dcmodify")}
 }
-
