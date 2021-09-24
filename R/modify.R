@@ -44,9 +44,12 @@ NULL
 
 get_rule_guard <- function(r,dat, na.condition){
   g <- guard(r)
+  if (is.null(g)){
+    return(rep(TRUE,nrow(dat)))
+  }
   I <- eval(g,dat)
   if ( is.null(I) ){ 
-    rep(TRUE,nrow(dat)) 
+    rep(FALSE,nrow(dat)) 
   } else {
     I[is.na(I)] <- na.condition
     I
@@ -64,18 +67,17 @@ setMethod("modify",c("data.frame","modifier"), function(dat, x, ...){
   sequential <- opts("sequential")
   odat <- if (sequential) NULL else dat
   na.condition <- opts("na.condition")
-  
-  modifiers <- x$exprs(vectorize=FALSE
-    , expand_assignments=TRUE)
-  for ( m in modifiers ){
-    m <- set_guards(m)
-    for (n in m){ # loop over nested conditionals
-      I <- if (sequential) get_rule_guard(n, dat,na.condition) else get_rule_guard(n,odat,na.condition)
-      if (all(I)){
-        dat <- within(dat, eval(n))
-      } else {
-        if (any(I)) dat[I,] <- within(dat[I,,drop=FALSE], eval(n))
-      }
+  asgnmts <- x$assignments() 
+  for (n in asgnmts){
+    I <- if (sequential) {
+      get_rule_guard(n, dat,na.condition)
+    } else {
+      get_rule_guard(n,odat,na.condition)
+    }
+    if (all(I)){
+      dat <- within(dat, eval(n))
+    } else {
+      if (any(I)) dat[I,] <- within(dat[I,,drop=FALSE], eval(n))
     }
   }
   
@@ -91,7 +93,3 @@ setMethod("modify",c("data.frame","modifier"), function(dat, x, ...){
 modify_so <- function(dat, ...){
   modify(dat, modifier(...))
 }
-
-
-
-

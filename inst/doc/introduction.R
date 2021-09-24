@@ -27,6 +27,12 @@ ret1 <- modify(retailers,m)
 #    , if ( is.na(staff.costs) ) staff.costs <- mean(staff.costs)
 #  )
 
+## ----eval=FALSE---------------------------------------------------------------
+#  export_yaml(m, "myrules.yaml")
+
+## ----eval=FALSE---------------------------------------------------------------
+#  m <- modifier(.file = "myrules.yaml")
+
 ## ----eval=TRUE----------------------------------------------------------------
 library(lumberjack)
 # add primary key so cellwise changes can be traced

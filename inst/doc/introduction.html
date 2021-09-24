@@ -12,7 +12,7 @@
 
 <meta name="author" content="Mark van der Loo and Edwin de Jonge" />
 
-<meta name="date" content="2021-04-29" />
+<meta name="date" content="2021-09-24" />
 
 <title>Introduction to dcmodify</title>
 
@@ -27,7 +27,14 @@
     </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
@@ -311,7 +318,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Introduction to dcmodify</h1>
 <h4 class="author">Mark van der Loo and Edwin de Jonge</h4>
-<h4 class="date">2021-04-29</h4>
+<h4 class="date">2021-09-24</h4>
 
 
 <div id="TOC">
@@ -320,7 +327,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li><a href="#why-this-package">Why this package</a></li>
 <li><a href="#basic-workflow">Basic workflow</a></li>
 <li><a href="#handling-missing-values">Handling missing values</a></li>
-<li><a href="#importing-and-exporting-rules-from-file">Importing and exporting rules from file</a></li>
+<li><a href="#exporting-and-importing-rules-from-file">Exporting and importing rules from file</a></li>
 <li><a href="#performance-and-a-glimpse-under-the-hood.">Performance, and a glimpse under the hood.</a></li>
 <li><a href="#difference-with-dplyrmutate">Difference with dplyr::mutate</a></li>
 <li><a href="#logging-changes">Logging changes</a></li>
@@ -337,7 +344,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="why-this-package" class="section level3">
 <h3>Why this package</h3>
-<p>Data cleaning work flows or scripts typically contain a lot of ‘if this do that’ type of statements. Such statements are typically condensed expert knowledge. With this package, such ‘data modifying rules’ are taken out of the code and become in stead parameters to the work flow. This allows you to maintain, document and reason about data modification rules separately from the flow of your programme.</p>
+<p>Data cleaning work flows or scripts typically contain a lot of ‘if this do that’ type of statements. Such statements are typically condensed expert knowledge. With this package, such ‘data modifying rules’ are taken out of the code and become instead parameters to the work flow. This allows you to maintain, document and reason about data modification rules separately from the flow of your programme.</p>
 <p>This means you, the expert, can focus on the content and let R do the work.</p>
 </div>
 <div id="basic-workflow" class="section level3">
@@ -379,8 +386,30 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <pre><code>other.rev &lt; 0</code></pre>
 <p>in the first rule of <code>m</code> above evaluates to <code>NA</code> in the first record of the <code>retailers</code> dataset. Such cases are handled by treating it as if the condition evaluated to <code>FALSE</code>.</p>
 </div>
-<div id="importing-and-exporting-rules-from-file" class="section level3">
-<h3>Importing and exporting rules from file</h3>
+<div id="exporting-and-importing-rules-from-file" class="section level3">
+<h3>Exporting and importing rules from file</h3>
+<p>Modifier rules can also be defined and stored outside of the R script through the use of YAML files. Defining a YAML file can be done by hand, or by exporting an existing modifier object via <code>export_yaml</code> or <code>as_yaml</code>. Exporting the modifier defined in the <a href="#basic-workflow">Basic workflow</a> section would look as follows:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">export_yaml</span>(m, <span class="st">&quot;myrules.yaml&quot;</span>)</a></code></pre></div>
+<p>This code will create a YAML file with the following content:</p>
+<pre><code>rules:
+- expr: if (other.rev &lt; 0) other.rev &lt;- -1 * other.rev
+  name: M1
+  label: &#39;&#39;
+  description: &#39;&#39;
+  created: 2021-07-29 16:57:00
+  origin: command-line
+  meta: []
+- expr: if (is.na(staff.costs)) staff.costs &lt;- mean(staff.costs)
+  name: M2
+  label: &#39;&#39;
+  description: &#39;&#39;
+  created: 2021-07-29 16:57:00
+  origin: command-line
+  meta: []</code></pre>
+<p>Out of all these keys only <code>rules:</code> and <code>expr:</code> are required, all others are optional.</p>
+<p>Once a YAML file is created, <code>modifier</code> can read the modification rules from the file and store it as a modifier object. For this the <code>.file</code> argument is used:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">m &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="dt">.file =</span> <span class="st">&quot;myrules.yaml&quot;</span>)</a></code></pre></div>
+<p>Using separate files for the storage of rules has the advantage that the same set of rules can be easily shared across many different scripts.</p>
 </div>
 <div id="performance-and-a-glimpse-under-the-hood." class="section level3">
 <h3>Performance, and a glimpse under the hood.</h3>
@@ -390,36 +419,36 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <li>The rules are transformed to statements that can be executed in a vectorized manner by R.</li>
 <li>If any macros present, they are inserted into the statements</li>
 <li>For each assignment, the conditions under which they should be executed are collected.</li>
-<li>The conditions are evaluated and assignments are exectuted on a selection of the data.</li>
+<li>The conditions are evaluated and assignments are executed on a selection of the data.</li>
 </ol>
 </div>
 <div id="difference-with-dplyrmutate" class="section level3">
 <h3>Difference with dplyr::mutate</h3>
-<p>The functionality of this package in resembles <code>dplyr::mutate</code>, since it also allows one to specify data mutations on data frames (or other tabular data objects). The dplyr package is especially usefull for interactive use, for use in programming through the ‘underscored’ functions such as <code>mutate_</code>.</p>
-<p>The <code>dcmodify</code> package has been developed with a production street in mind where similar data sets are processed frequently. By taking the modifying rules out of the software, R programmers can build an application that allows users that are less knowledgable about programming to specify their modification rules.</p>
+<p>The functionality of this package resembles <code>dplyr::mutate</code>, since it also allows one to specify data mutations on data frames (or other tabular data objects). The dplyr package is especially useful for interactive use and also for use in programming through ‘underscored’ functions such as <code>mutate_</code>.</p>
+<p>The <code>dcmodify</code> package has been developed with a production street in mind where similar data sets are processed frequently. By taking the modifying rules out of the software, R programmers can build an application that allows users that are less knowledgeable about programming to specify their modification rules.</p>
 </div>
 <div id="logging-changes" class="section level3">
 <h3>Logging changes</h3>
-<p>It can be interesting to study the effect of a certan set of data modifying rules. The <a href="https://CRAN.R-project.org/package=lumberjack">lumberjack package</a> is capable of tracking changes in data.</p>
+<p>It can be interesting to study the effect of a certain set of data modifying rules. The <a href="https://CRAN.R-project.org/package=lumberjack">lumberjack package</a> is capable of tracking changes in data.</p>
 <p>To start logging data you need to replace the magrittr pipe (<code>%&gt;%</code>) with the lumberjack operator <code>%&gt;&gt;%</code> and insert some logging commands into the pipeline.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">library</span>(lumberjack)</a>
-<a class="sourceLine" id="cb9-2" title="2"><span class="co"># add primary key so cellwise changes can be traced</span></a>
-<a class="sourceLine" id="cb9-3" title="3">women<span class="op">$</span>id &lt;-<span class="st"> </span>letters[<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>]</a>
-<a class="sourceLine" id="cb9-4" title="4"></a>
-<a class="sourceLine" id="cb9-5" title="5">out &lt;-<span class="st"> </span>women <span class="op">%&gt;&gt;%</span></a>
-<a class="sourceLine" id="cb9-6" title="6"><span class="st">  </span><span class="kw">start_log</span>( cellwise<span class="op">$</span><span class="kw">new</span>(<span class="dt">key=</span><span class="st">&quot;id&quot;</span>) ) <span class="op">%&gt;&gt;%</span></a>
-<a class="sourceLine" id="cb9-7" title="7"><span class="st">  </span><span class="kw">modify_so</span>( <span class="cf">if</span> (height <span class="op">&lt;</span><span class="st"> </span><span class="kw">mean</span>(height)) height &lt;-<span class="st"> </span><span class="kw">mean</span>(height) ) <span class="op">%&gt;&gt;%</span></a>
-<a class="sourceLine" id="cb9-8" title="8"><span class="st">  </span><span class="kw">dump_log</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">library</span>(lumberjack)</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="co"># add primary key so cellwise changes can be traced</span></a>
+<a class="sourceLine" id="cb12-3" title="3">women<span class="op">$</span>id &lt;-<span class="st"> </span>letters[<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>]</a>
+<a class="sourceLine" id="cb12-4" title="4"></a>
+<a class="sourceLine" id="cb12-5" title="5">out &lt;-<span class="st"> </span>women <span class="op">%&gt;&gt;%</span></a>
+<a class="sourceLine" id="cb12-6" title="6"><span class="st">  </span><span class="kw">start_log</span>( cellwise<span class="op">$</span><span class="kw">new</span>(<span class="dt">key=</span><span class="st">&quot;id&quot;</span>) ) <span class="op">%&gt;&gt;%</span></a>
+<a class="sourceLine" id="cb12-7" title="7"><span class="st">  </span><span class="kw">modify_so</span>( <span class="cf">if</span> (height <span class="op">&lt;</span><span class="st"> </span><span class="kw">mean</span>(height)) height &lt;-<span class="st"> </span><span class="kw">mean</span>(height) ) <span class="op">%&gt;&gt;%</span></a>
+<a class="sourceLine" id="cb12-8" title="8"><span class="st">  </span><span class="kw">dump_log</span>()</a></code></pre></div>
 <pre><code>## Dumped a log at cellwise.csv</code></pre>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="co"># The log is written to file.</span></a>
-<a class="sourceLine" id="cb11-2" title="2"><span class="kw">read.csv</span>(<span class="st">&quot;cellwise.csv&quot;</span>) <span class="op">%&gt;&gt;%</span><span class="st"> </span><span class="kw">head</span>()</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="co"># The log is written to file.</span></a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="kw">read.csv</span>(<span class="st">&quot;cellwise.csv&quot;</span>) <span class="op">%&gt;&gt;%</span><span class="st"> </span><span class="kw">head</span>()</a></code></pre></div>
 <pre><code>##   step                     time srcref
-## 1    1 2021-04-29 11:45:52 CEST     NA
-## 2    1 2021-04-29 11:45:52 CEST     NA
-## 3    1 2021-04-29 11:45:52 CEST     NA
-## 4    1 2021-04-29 11:45:52 CEST     NA
-## 5    1 2021-04-29 11:45:52 CEST     NA
-## 6    1 2021-04-29 11:45:52 CEST     NA
+## 1    1 2021-09-24 11:29:10 CEST     NA
+## 2    1 2021-09-24 11:29:10 CEST     NA
+## 3    1 2021-09-24 11:29:10 CEST     NA
+## 4    1 2021-09-24 11:29:10 CEST     NA
+## 5    1 2021-09-24 11:29:10 CEST     NA
+## 6    1 2021-09-24 11:29:10 CEST     NA
 ##                                                     expression key variable old
 ## 1 modify_so(if (height &lt; mean(height)) height &lt;- mean(height))   a   height  58
 ## 2 modify_so(if (height &lt; mean(height)) height &lt;- mean(height))   b   height  59
@@ -437,7 +466,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <div id="current-limitations" class="section level3">
 <h3>Current limitations</h3>
-<p>Conditional statements including <code>else</code> are not suported yet. Rules containing <code>if() else</code> are ignored with a warning.</p>
+<p>Conditional statements including <code>else</code> are not supported yet. Rules containing <code>if() else</code> are ignored with a warning.</p>
 </div>
 
 
