@@ -1,48 +1,73 @@
-## ----eval=FALSE---------------------------------------------------------------
-#  library(dcmodify)
-#  library(magrittr)
-#  iris %<>% modify_so( if(Sepal.Width > 4 ) Sepal.Width <- 4 )
-
-## -----------------------------------------------------------------------------
-data("retailers", package="validate")
-head(retailers[-(1:2)],3)
-
-## -----------------------------------------------------------------------------
-library(dcmodify)
-m <- modifier(
-  if (other.rev < 0) other.rev <- -1 * other.rev
-  , if ( is.na(staff.costs) ) staff.costs <- mean(staff.costs)
+# <unlabeled code block>
+water <- data.frame(
+   name        = c("Ross", "Robert", "Martin", "Brian", "Simon")
+ , consumption = c(110, 105, 0.15, 95, -100) 
 )
+water
 
-## -----------------------------------------------------------------------------
-ret1 <- modify(retailers,m)
+# <unlabeled code block>
+library(dcmodify)
+# define a rule set (here with one rule)
+rules <- modifier(
+          if ( abs(consumption) <= 1 ) consumption <- 1000*consumption  
+        , if ( consumption < 0 ) consumption <- -1 * consumption )  
 
-## ----eval=FALSE---------------------------------------------------------------
-#  library(magrittr)
-#  ret2 <- retailers %>% modifier(m)
+# apply the ruleset to the data
+out <- modify(water, rules)
+out
 
-## ----eval=FALSE---------------------------------------------------------------
-#  retailers %<>% modify_so(
-#    if ( other.rev < 0) other.rev <- -1 * other.rev
-#    , if ( is.na(staff.costs) ) staff.costs <- mean(staff.costs)
-#  )
+# <unlabeled code block>
+rules
 
-## ----eval=FALSE---------------------------------------------------------------
-#  export_yaml(m, "myrules.yaml")
+# <unlabeled code block>
+modify(water, rules[2])
 
-## ----eval=FALSE---------------------------------------------------------------
-#  m <- modifier(.file = "myrules.yaml")
+# <unlabeled code block>
+variables(rules)
 
-## ----eval=TRUE----------------------------------------------------------------
+# <unlabeled code block>
+rules <- modifier(.file="myrules.txt")
+rules
+
+# <unlabeled code block>
+fn <- tempfile()
+# export rules to yaml format
+export_yaml(rules,file=fn)
+
+# print file contents
+readLines(fn) |> paste(collapse="\n") |> cat()
+
+# <unlabeled code block>
+d <- data.frame(
+    name = c("U1","S1")
+  , label = c("Unit error", "sign error")
+)
+d$rule <- c(
+   "if(abs(consumption)<=1) consuption <- 1000 * consumption"
+  ,"if(consumption < 0) consumption <- -1 * consumption"
+)
+d
+
+# <unlabeled code block>
+myrules <- modifier(.data=d)
+myrules
+
+# <unlabeled code block>
 library(lumberjack)
-# add primary key so cellwise changes can be traced
-women$id <- letters[1:15]
+# create a logger (see ?cellwise)
+lgr <- cellwise$new(key="name")
+# create rules
 
-out <- women %>>%
-  start_log( cellwise$new(key="id") ) %>>%
-  modify_so( if (height < mean(height)) height <- mean(height) ) %>>%
-  dump_log()
+rules <- modifier(
+          if ( abs(consumption) <= 1 ) consumption <- 1000*consumption  
+        , if ( consumption < 0 ) consumption <- -1 * consumption )  
 
-# The log is written to file.
-read.csv("cellwise.csv") %>>% head()
+# apply rules, and pass logger object to modify()
+out <- modify(water, rules, logger=lgr)
+
+# check what happened, by dumping the log and reading in 
+# the csv.
+logfile <- tempfile()
+lgr$dump(file=logfile)
+read.csv(logfile)
 

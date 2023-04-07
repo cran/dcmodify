@@ -7,14 +7,16 @@
 \usage{
 modify(dat, x, ...)
 
-\S4method{modify}{data.frame,modifier}(dat, x, ...)
+\S4method{modify}{data.frame,modifier}(dat, x, logger = NULL, ...)
 }
 \arguments{
-\item{dat}{An R object carrying data}
+\item{dat}{A \code{data.frame}}
 
-\item{x}{An R object carrying modififying rules}
+\item{x}{A \code{modifier} object containing modifying rules.}
 
-\item{...}{Options.}
+\item{...}{Extra arguments.}
+
+\item{logger}{Optional. A \code{lumberjack}-compatible logger object.}
 }
 \description{
 Modify a data set

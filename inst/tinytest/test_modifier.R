@@ -19,7 +19,7 @@ m <- expression(
 
 for ( e in m){
   expect_true(dcmodify:::is_modifying(e))
-}  
+}
 
 m <- expression(
   x = 1
@@ -28,17 +28,26 @@ m <- expression(
     x <- NA
     print("hello")
   }
- 
+
 )
 for ( e in m){
   expect_false(dcmodify:::is_modifying(e))
 }
 #expect_warning(modifier( if (x > 0) y<- 1 else y<-2  ))
-   
 
+expect_silent(m <- modifier(.file="rulefile.R"))
+expect_equal(length(m), 1)
 
 ## no-crash test
-capture.output(modifier(if(x>0)x<-1))
+expect_silent(modifier(if(x>0)x<-1))
+
+## multiple assignments when first assignement changes condition
+m <- modifier(if (x>0){x <- -1; x<- 2*x})
+out <- modify(data.frame(x=1), m)
+expect_equal(out$x,-2)
+
+
+
 
 
 ## macros work
@@ -53,6 +62,12 @@ m <- modifier( if (x > 0) x <- 1)
 z <- m[1]
 expect_equal(length(z), 1)
 
+## read rules from data frame works
+df <- data.frame(rule= "if(x==0)x<-1", name="", description = "")
+m <- modifier(.data = df)
+dat <- data.frame(x=0)
+mod_dat <- data.frame(x=1)
+expect_equal(modify(dat, m), mod_dat)
 
 
 ## missing values are handled
@@ -91,6 +106,22 @@ expect_equal(asgnmnts[[2]], quote(y <- 1))
 expect_equal(asgnmnts[[3]], quote(z <- 1))
 expect_equal(guard(asgnmnts[[1]]), quote(x == 0))
 expect_equal(guard(asgnmnts[[2]]), quote(x > 0))
-expect_equal(guard(asgnmnts[[3]]), quote(x > 0))
+expect_null(guard(asgnmnts[[3]]))
 
 asgnmnts <- m$assignments(flatten=FALSE)
+
+
+## aggregates / assignments
+m <- modifier(if (is.na(turnover)){turnover <- mean(turnover, na.rm=TRUE)})
+d <- data.frame(turnover = c(NA, 1, 3))
+d_m <- modify(d, m)
+expect_equal(d_m$turnover[1], 2)
+
+m <- modifier(
+  if (is.na(turnover)){
+    turnover <- mean_by(turnover, by=nace, na.rm=TRUE)}
+  )
+d <- data.frame(turnover = c(1, NA, 3, 4, NA, 6), nace=c("A", "A", "A", "B", "B", "B"))
+d_m <- modify(d, m)
+expect_equal(d_m$turnover, c(1,2,3,4,5,6))
+

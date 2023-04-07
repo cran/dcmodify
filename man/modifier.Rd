@@ -4,12 +4,18 @@
 \alias{modifier}
 \title{Create or read a set of data modification rules}
 \usage{
-modifier(..., .file)
+modifier(..., .file, .data)
 }
 \arguments{
 \item{...}{A comma-separated list of modification rules.}
 
-\item{.file}{A character vector of file locations.}
+\item{.file}{(optional) A character vector of file locations.}
+
+\item{.data}{(optional) A \code{data.frame} with at least a column \code{"rule"}
+of type \code{character}. Optionally, the following columns of metadata
+can be provided (all \code{character}, except \code{"created"} which 
+should be \code{POSIXct}): \code{"name"}, 
+\code{"label"}, \code{"description"}, \code{"origin"}, \code{"created"}.}
 }
 \value{
 An object of class \code{modifier}.

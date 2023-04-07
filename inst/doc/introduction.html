@@ -1,41 +1,18 @@
 <!DOCTYPE html>
-
-<html>
-
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
 <head>
-
-<meta charset="utf-8" />
-<meta name="generator" content="pandoc" />
-<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
-
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-<meta name="author" content="Mark van der Loo and Edwin de Jonge" />
-
-<meta name="date" content="2021-09-24" />
-
-<title>Introduction to dcmodify</title>
-
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
-
-
-<style type="text/css">
-  code {
-    white-space: pre;
-  }
-  .sourceCode {
-    overflow: visible;
-  }
-</style>
-<style type="text/css" data-origin="pandoc">
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Mark P.J. van der Loo and Edwin de Jonge" />
+  <title>Introduction to dcmodify</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
 a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
 a.sourceLine:empty { height: 1.2em; }
@@ -97,392 +74,259 @@ code span.st { color: #4070a0; } /* String */
 code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-
-</style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    for (var j = 0; j < rules.length; j++) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
-    }
-  }
-})();
-</script>
-
-
-
-
-<style type="text/css">body {
-background-color: #fff;
-margin: 1em auto;
-max-width: 700px;
-overflow: visible;
-padding-left: 2em;
-padding-right: 2em;
-font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-font-size: 14px;
-line-height: 1.35;
+  </style>
+  <style type="text/css">
+body {
+max-width: 50rem;
+margin-left: auto;
+margin-right: auto;
+font-family: system-ui;
+color: lightgray;
+background: #555555;
 }
-#TOC {
-clear: both;
-margin: 0 0 10px 10px;
-padding: 4px;
-width: 400px;
-border: 1px solid #CCCCCC;
-border-radius: 5px;
-background-color: #f6f6f6;
-font-size: 13px;
-line-height: 1.3;
-}
-#TOC .toctitle {
-font-weight: bold;
-font-size: 15px;
-margin-left: 5px;
-}
-#TOC ul {
-padding-left: 40px;
-margin-left: -1.5em;
-margin-top: 5px;
-margin-bottom: 5px;
-}
-#TOC ul ul {
-margin-left: -2em;
-}
-#TOC li {
-line-height: 16px;
-}
-table {
-margin: 1em auto;
-border-width: 1px;
-border-color: #DDDDDD;
-border-style: outset;
-border-collapse: collapse;
-}
-table th {
-border-width: 2px;
-padding: 5px;
-border-style: inset;
-}
-table td {
-border-width: 1px;
-border-style: inset;
-line-height: 18px;
-padding: 5px 5px;
-}
-table, table th, table td {
-border-left-style: none;
-border-right-style: none;
-}
-table thead, table tr.even {
-background-color: #f7f7f7;
-}
-p {
-margin: 0.5em 0;
-}
-blockquote {
-background-color: #f6f6f6;
-padding: 0.25em 0.75em;
-}
-hr {
-border-style: solid;
-border: none;
-border-top: 1px solid #777;
-margin: 28px 0;
-}
-dl {
-margin-left: 0;
-}
-dl dd {
-margin-bottom: 13px;
-margin-left: 13px;
-}
-dl dt {
-font-weight: bold;
-}
-ul {
-margin-top: 0;
-}
-ul li {
-list-style: circle outside;
-}
-ul ul {
-margin-bottom: 0;
-}
-pre, code {
-background-color: #f7f7f7;
-border-radius: 3px;
-color: #333;
-white-space: pre-wrap; 
+p, li {
+text-align: justify;
 }
 pre {
-border-radius: 3px;
-margin: 5px 0px 10px 0px;
-padding: 10px;
+background: #444;
+padding: 0.5rem;
 }
-pre:not([class]) {
-background-color: #f7f7f7;
+h1, h2, h3, h4, h5 {
+color: orange;
+font-weight: bold;
 }
-code {
-font-family: Consolas, Monaco, 'Courier New', monospace;
-font-size: 85%;
-}
-p > code, li > code {
-padding: 2px 0px;
-}
-div.figure {
-text-align: center;
-}
-img {
-background-color: #FFFFFF;
-padding: 2px;
-border: 1px solid #DDDDDD;
-border-radius: 3px;
-border: 1px solid #CCCCCC;
-margin: 0 5px;
-}
-h1 {
-margin-top: 0;
-font-size: 35px;
-line-height: 40px;
+h4, h5 {
+color: inherit;
 }
 h2 {
-border-bottom: 4px solid #f7f7f7;
-padding-top: 10px;
-padding-bottom: 2px;
-font-size: 145%;
-}
-h3 {
-border-bottom: 2px solid #f7f7f7;
-padding-top: 10px;
-font-size: 120%;
-}
-h4 {
-border-bottom: 1px solid #f7f7f7;
-margin-left: 8px;
-font-size: 105%;
-}
-h5, h6 {
-border-bottom: 1px solid #ccc;
-font-size: 105%;
+margin-top: 3rem;
 }
 a {
-color: #0033dd;
-text-decoration: none;
+color: orange;
 }
 a:hover {
-color: #6666ff; }
-a:visited {
-color: #800080; }
-a:visited:hover {
-color: #BB00BB; }
-a[href^="http:"] {
-text-decoration: underline; }
-a[href^="https:"] {
-text-decoration: underline; }
+color: lightblue;
+}
+pre code {
+color: white;
+background: inherit;
+padding: 0;
+}
+code {
+color: #e5c892;
+background: #444;
+padding: 0.2rem;
+}
 
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; } 
-code > span.er { color: #a61717; background-color: #e3d2d2; } 
+p.author {
+font-weight : bold;
+color: orange;
+}
+
+code {
+color : lightgray;
+}
+code span.op {
+color: #cccccc;
+}
+code span.kw, code span.cf {
+color: #30bd58;
+}
+code span.st {
+color: #76a9db; }
+code span.dv, code span.ot, code span.fl{
+color: #7fd0a8; }
+code span.dt, code span.er {
+color: #ee8c70; }
 </style>
-
-
-
-
 </head>
-
 <body>
-
-
-
-
-<h1 class="title toc-ignore">Introduction to dcmodify</h1>
-<h4 class="author">Mark van der Loo and Edwin de Jonge</h4>
-<h4 class="date">2021-09-24</h4>
-
-
-<div id="TOC">
-<ul>
-<li><a href="#a-first-statement">A first statement</a></li>
-<li><a href="#why-this-package">Why this package</a></li>
-<li><a href="#basic-workflow">Basic workflow</a></li>
-<li><a href="#handling-missing-values">Handling missing values</a></li>
-<li><a href="#exporting-and-importing-rules-from-file">Exporting and importing rules from file</a></li>
-<li><a href="#performance-and-a-glimpse-under-the-hood.">Performance, and a glimpse under the hood.</a></li>
-<li><a href="#difference-with-dplyrmutate">Difference with dplyr::mutate</a></li>
-<li><a href="#logging-changes">Logging changes</a></li>
-<li><a href="#current-limitations">Current limitations</a></li>
-</ul>
-</div>
-
-<div id="a-first-statement" class="section level3">
-<h3>A first statement</h3>
-<p>In the iris dataset, replace <code>Sepal.Width</code> with 4 value if it exceeds 4.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(dcmodify)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(magrittr)</a>
-<a class="sourceLine" id="cb1-3" title="3">iris <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">modify_so</span>( <span class="cf">if</span>(Sepal.Width <span class="op">&gt;</span><span class="st"> </span><span class="dv">4</span> ) Sepal.Width &lt;-<span class="st"> </span><span class="dv">4</span> )</a></code></pre></div>
-</div>
-<div id="why-this-package" class="section level3">
-<h3>Why this package</h3>
-<p>Data cleaning work flows or scripts typically contain a lot of ‘if this do that’ type of statements. Such statements are typically condensed expert knowledge. With this package, such ‘data modifying rules’ are taken out of the code and become instead parameters to the work flow. This allows you to maintain, document and reason about data modification rules separately from the flow of your programme.</p>
-<p>This means you, the expert, can focus on the content and let R do the work.</p>
-</div>
-<div id="basic-workflow" class="section level3">
-<h3>Basic workflow</h3>
-<p>The workflow of <code>dcmodify</code> is designed to take two concerns of your hands. The first concern is how to implement the many ideas and rules that define how and when to modify data. The second concern is related to how to apply such rules to your data. We therefore introduce two nouns and one verb that govern the basic workflow.</p>
-<ul>
-<li>data: This is your data, currently this must be stored in a <code>data.frame</code>.</li>
-<li><code>modifier</code>: This is an object that stores (conditional) data modification rules.</li>
-<li><code>modify</code>: This is a function that applies the rules in a modifier to your data.</li>
-</ul>
-<p>Here’s an example using the <code>retailers</code> data set from the <a href="https://cran.r-project.org/package=validate">validate</a> package.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">data</span>(<span class="st">&quot;retailers&quot;</span>, <span class="dt">package=</span><span class="st">&quot;validate&quot;</span>)</a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="kw">head</span>(retailers[<span class="op">-</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>)],<span class="dv">3</span>)</a></code></pre></div>
-<pre><code>##   staff turnover other.rev total.rev staff.costs total.costs profit vat
-## 1    75       NA        NA      1130          NA       18915  20045  NA
-## 2     9     1607        NA      1607         131        1544     63  NA
-## 3    NA     6886       -33      6919         324        6493    426  NA</code></pre>
-<p>First we define a set of modifying rules, using <code>modifier</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">library</span>(dcmodify)</a>
-<a class="sourceLine" id="cb4-2" title="2">m &lt;-<span class="st"> </span><span class="kw">modifier</span>(</a>
-<a class="sourceLine" id="cb4-3" title="3">  <span class="cf">if</span> (other.rev <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) other.rev &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>other.rev</a>
-<a class="sourceLine" id="cb4-4" title="4">  , <span class="cf">if</span> ( <span class="kw">is.na</span>(staff.costs) ) staff.costs &lt;-<span class="st"> </span><span class="kw">mean</span>(staff.costs)</a>
-<a class="sourceLine" id="cb4-5" title="5">)</a></code></pre></div>
-<p>Next, the rules can be applied to our data.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">ret1 &lt;-<span class="st"> </span><span class="kw">modify</span>(retailers,m)</a></code></pre></div>
-<p>Alternatively, if you’re a fan of the <a href="https://cran.r-project.org/package=magrittr">magrittr</a>, package you can do this</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw">library</span>(magrittr)</a>
-<a class="sourceLine" id="cb6-2" title="2">ret2 &lt;-<span class="st"> </span>retailers <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">modifier</span>(m)</a></code></pre></div>
-<p>or even</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">retailers <span class="op">%&lt;&gt;%</span><span class="st"> </span><span class="kw">modify_so</span>(</a>
-<a class="sourceLine" id="cb7-2" title="2">  <span class="cf">if</span> ( other.rev <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) other.rev &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>other.rev</a>
-<a class="sourceLine" id="cb7-3" title="3">  , <span class="cf">if</span> ( <span class="kw">is.na</span>(staff.costs) ) staff.costs &lt;-<span class="st"> </span><span class="kw">mean</span>(staff.costs)</a>
-<a class="sourceLine" id="cb7-4" title="4">)</a></code></pre></div>
-<p>Here, the <code>%&lt;&gt;%</code> operator makes sure that the original dataset gets overwritten, and <code>modify_so</code> is a shortcut function for defining modificaton rules in-line.</p>
-</div>
-<div id="handling-missing-values" class="section level3">
-<h3>Handling missing values</h3>
-<p>The rules you define in a <code>modifier</code> are executed on records where the conditions yields <code>TRUE</code>. In R this poses the problem on what to do when in a record the condition evaluates to <code>NA</code>. For example, the condition</p>
-<pre><code>other.rev &lt; 0</code></pre>
-<p>in the first rule of <code>m</code> above evaluates to <code>NA</code> in the first record of the <code>retailers</code> dataset. Such cases are handled by treating it as if the condition evaluated to <code>FALSE</code>.</p>
-</div>
-<div id="exporting-and-importing-rules-from-file" class="section level3">
-<h3>Exporting and importing rules from file</h3>
-<p>Modifier rules can also be defined and stored outside of the R script through the use of YAML files. Defining a YAML file can be done by hand, or by exporting an existing modifier object via <code>export_yaml</code> or <code>as_yaml</code>. Exporting the modifier defined in the <a href="#basic-workflow">Basic workflow</a> section would look as follows:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">export_yaml</span>(m, <span class="st">&quot;myrules.yaml&quot;</span>)</a></code></pre></div>
-<p>This code will create a YAML file with the following content:</p>
-<pre><code>rules:
-- expr: if (other.rev &lt; 0) other.rev &lt;- -1 * other.rev
-  name: M1
-  label: &#39;&#39;
-  description: &#39;&#39;
-  created: 2021-07-29 16:57:00
-  origin: command-line
-  meta: []
-- expr: if (is.na(staff.costs)) staff.costs &lt;- mean(staff.costs)
-  name: M2
-  label: &#39;&#39;
-  description: &#39;&#39;
-  created: 2021-07-29 16:57:00
-  origin: command-line
-  meta: []</code></pre>
-<p>Out of all these keys only <code>rules:</code> and <code>expr:</code> are required, all others are optional.</p>
-<p>Once a YAML file is created, <code>modifier</code> can read the modification rules from the file and store it as a modifier object. For this the <code>.file</code> argument is used:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">m &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="dt">.file =</span> <span class="st">&quot;myrules.yaml&quot;</span>)</a></code></pre></div>
-<p>Using separate files for the storage of rules has the advantage that the same set of rules can be easily shared across many different scripts.</p>
-</div>
-<div id="performance-and-a-glimpse-under-the-hood." class="section level3">
-<h3>Performance, and a glimpse under the hood.</h3>
-<p>You, the user can assume that the rules are evaluated record-by-record. In reality, the package is smart enough to analyse the rules a little bit and to make sure they can be evaluated in a vectorized manner. This way explicit (and slow) R-loops are avoided as much as possible.</p>
-<p>In short, when you call <code>modify</code>, or <code>modify_so</code>, the following steps are performed.</p>
-<ol style="list-style-type: decimal">
-<li>The rules are transformed to statements that can be executed in a vectorized manner by R.</li>
-<li>If any macros present, they are inserted into the statements</li>
-<li>For each assignment, the conditions under which they should be executed are collected.</li>
-<li>The conditions are evaluated and assignments are executed on a selection of the data.</li>
+<header id="title-block-header">
+<h1 class="title">Introduction to <code>dcmodify</code></h1>
+<p class="author">Mark P.J. van der Loo and Edwin de Jonge</p>
+</header>
+<!--
+%\VignetteEngine{simplermarkdown::mdweave_to_html}
+%\VignetteIndexEntry{Introduction to dcmodify}
+-->
+<p><em>Rule-based data processing for data cleaning.</em></p>
+<p>Package version 0.8.0.</p>
+<p>Please use <code>citation(&quot;dcmodify&quot;)</code> to cite the package.</p>
+<h2 id="introduction">Introduction</h2>
+<p>The <code>dcmodify</code> package allows users to declare (conditional) data processing steps without hard-coding them in an R script.</p>
+<figure>
+<img src="data:image/png;base64,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" title="Rule-based data processing" alt="Rule-based data processing" /><figcaption><em>Rule-based data processing</em></figcaption>
+</figure>
+<p>The motivating use case is where domain experts need to frequently update (fix) values of a data set depending on data conditions. Such updates require (1) selecting the cases where the conditions apply, and (2) updating the values.</p>
+<h3 id="example">Example</h3>
+<p>We create a dataset where we asked some imaginary respondents about their average water consumption per day.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="op">&gt;</span><span class="st"> </span>water &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;Ross&quot;</span>, <span class="st">&quot;Robert&quot;</span>, <span class="st">&quot;Martin&quot;</span>, </a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="op">+</span><span class="st">     &quot;Brian&quot;</span>, <span class="st">&quot;Simon&quot;</span>), <span class="dt">consumption =</span> <span class="kw">c</span>(<span class="dv">110</span>, <span class="dv">105</span>, <span class="fl">0.15</span>, <span class="dv">95</span>, <span class="dv">-100</span>))</a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="op">&gt;</span><span class="st"> </span>water</a>
+<a class="sourceLine" id="cb1-5" title="5">    name consumption</a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="dv">1</span>   Ross      <span class="fl">110.00</span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="dv">2</span> Robert      <span class="fl">105.00</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="dv">3</span> Martin        <span class="fl">0.15</span></a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="dv">4</span>  Brian       <span class="fl">95.00</span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="dv">5</span>  Simon     <span class="fl">-100.00</span></a></code></pre></div>
+<p>Here, Martin submitted his water consumption in m<sup>3</sup> while the others responded in liters. Such a unit of measure error can be detected and fixed. Simon took the engineering approach, interpreted consumption as a <em>sink</em>, and put a negative sign in front of his answer. Again, this is a data error that can be detected and fixed easily.</p>
+<p>If such errors occur frequently, it makes sense to store the treatment. In <code>dcmodify</code> this can be solved as follows.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="op">&gt;</span><span class="st"> </span><span class="kw">library</span>(dcmodify)</a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="op">&gt;</span><span class="st"> </span>rules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="op">+</span><span class="st">     </span>consumption, <span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption)</a>
+<a class="sourceLine" id="cb2-5" title="5"></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="op">&gt;</span><span class="st"> </span>out &lt;-<span class="st"> </span><span class="kw">modify</span>(water, rules)</a>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="op">&gt;</span><span class="st"> </span>out</a>
+<a class="sourceLine" id="cb2-9" title="9">    name consumption</a>
+<a class="sourceLine" id="cb2-10" title="10"><span class="dv">1</span>   Ross         <span class="dv">110</span></a>
+<a class="sourceLine" id="cb2-11" title="11"><span class="dv">2</span> Robert         <span class="dv">105</span></a>
+<a class="sourceLine" id="cb2-12" title="12"><span class="dv">3</span> Martin         <span class="dv">150</span></a>
+<a class="sourceLine" id="cb2-13" title="13"><span class="dv">4</span>  Brian          <span class="dv">95</span></a>
+<a class="sourceLine" id="cb2-14" title="14"><span class="dv">5</span>  Simon         <span class="dv">100</span></a></code></pre></div>
+<p>In the first step we define a set of conditional data modifying rules of the form:</p>
+<pre><code>if (some condition) change somthing</code></pre>
+<p>next, using <code>modifier()</code>, these rules are applied record-wise.</p>
+<h2 id="whats-the-idea">What’s the idea</h2>
+<p>In <code>dcmodify</code> conditional data modifying rules are first class citizens. Modifying rules can be created, deleted, read from or written to file, filtered, selected, and investigated. And of course, applied to data.</p>
+<p>In particular, the <code>rules</code> object of the previous example is basically a list of class <code>modifier</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="op">&gt;</span><span class="st"> </span>rules</a>
+<a class="sourceLine" id="cb4-2" title="2">Object of class modifier with <span class="dv">2</span> elements<span class="op">:</span></a>
+<a class="sourceLine" id="cb4-3" title="3">M1<span class="op">:</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="st">  </span><span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
+<a class="sourceLine" id="cb4-5" title="5"></a>
+<a class="sourceLine" id="cb4-6" title="6">M2<span class="op">:</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="st">  </span><span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a></code></pre></div>
+<p>For example, we may select one rule and apply it to our original data set.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="op">&gt;</span><span class="st"> </span><span class="kw">modify</span>(water, rules[<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb5-2" title="2">    name consumption</a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="dv">1</span>   Ross      <span class="fl">110.00</span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="dv">2</span> Robert      <span class="fl">105.00</span></a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="dv">3</span> Martin        <span class="fl">0.15</span></a>
+<a class="sourceLine" id="cb5-6" title="6"><span class="dv">4</span>  Brian       <span class="fl">95.00</span></a>
+<a class="sourceLine" id="cb5-7" title="7"><span class="dv">5</span>  Simon      <span class="fl">100.00</span></a></code></pre></div>
+<p>We can ask which variables are used in the modifying rules (here: only one).</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="op">&gt;</span><span class="st"> </span><span class="kw">variables</span>(rules)</a>
+<a class="sourceLine" id="cb6-2" title="2">[<span class="dv">1</span>] <span class="st">&quot;consumption&quot;</span></a></code></pre></div>
+<h3 id="exercises">Exercises</h3>
+<ol type="1">
+<li>Load the <code>retailers</code> dataset from the validate package using <code>data(&quot;retailers&quot;, package=&quot;validate&quot;)</code>.</li>
+<li>Create a modifier that (1) sets <code>other.rev</code> to zero if it is missing, (2) replaces negative <code>other.rev</code> with the absolute value.</li>
 </ol>
-</div>
-<div id="difference-with-dplyrmutate" class="section level3">
-<h3>Difference with dplyr::mutate</h3>
-<p>The functionality of this package resembles <code>dplyr::mutate</code>, since it also allows one to specify data mutations on data frames (or other tabular data objects). The dplyr package is especially useful for interactive use and also for use in programming through ‘underscored’ functions such as <code>mutate_</code>.</p>
-<p>The <code>dcmodify</code> package has been developed with a production street in mind where similar data sets are processed frequently. By taking the modifying rules out of the software, R programmers can build an application that allows users that are less knowledgeable about programming to specify their modification rules.</p>
-</div>
-<div id="logging-changes" class="section level3">
-<h3>Logging changes</h3>
-<p>It can be interesting to study the effect of a certain set of data modifying rules. The <a href="https://CRAN.R-project.org/package=lumberjack">lumberjack package</a> is capable of tracking changes in data.</p>
-<p>To start logging data you need to replace the magrittr pipe (<code>%&gt;%</code>) with the lumberjack operator <code>%&gt;&gt;%</code> and insert some logging commands into the pipeline.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="kw">library</span>(lumberjack)</a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="co"># add primary key so cellwise changes can be traced</span></a>
-<a class="sourceLine" id="cb12-3" title="3">women<span class="op">$</span>id &lt;-<span class="st"> </span>letters[<span class="dv">1</span><span class="op">:</span><span class="dv">15</span>]</a>
-<a class="sourceLine" id="cb12-4" title="4"></a>
-<a class="sourceLine" id="cb12-5" title="5">out &lt;-<span class="st"> </span>women <span class="op">%&gt;&gt;%</span></a>
-<a class="sourceLine" id="cb12-6" title="6"><span class="st">  </span><span class="kw">start_log</span>( cellwise<span class="op">$</span><span class="kw">new</span>(<span class="dt">key=</span><span class="st">&quot;id&quot;</span>) ) <span class="op">%&gt;&gt;%</span></a>
-<a class="sourceLine" id="cb12-7" title="7"><span class="st">  </span><span class="kw">modify_so</span>( <span class="cf">if</span> (height <span class="op">&lt;</span><span class="st"> </span><span class="kw">mean</span>(height)) height &lt;-<span class="st"> </span><span class="kw">mean</span>(height) ) <span class="op">%&gt;&gt;%</span></a>
-<a class="sourceLine" id="cb12-8" title="8"><span class="st">  </span><span class="kw">dump_log</span>()</a></code></pre></div>
-<pre><code>## Dumped a log at cellwise.csv</code></pre>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="co"># The log is written to file.</span></a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="kw">read.csv</span>(<span class="st">&quot;cellwise.csv&quot;</span>) <span class="op">%&gt;&gt;%</span><span class="st"> </span><span class="kw">head</span>()</a></code></pre></div>
-<pre><code>##   step                     time srcref
-## 1    1 2021-09-24 11:29:10 CEST     NA
-## 2    1 2021-09-24 11:29:10 CEST     NA
-## 3    1 2021-09-24 11:29:10 CEST     NA
-## 4    1 2021-09-24 11:29:10 CEST     NA
-## 5    1 2021-09-24 11:29:10 CEST     NA
-## 6    1 2021-09-24 11:29:10 CEST     NA
-##                                                     expression key variable old
-## 1 modify_so(if (height &lt; mean(height)) height &lt;- mean(height))   a   height  58
-## 2 modify_so(if (height &lt; mean(height)) height &lt;- mean(height))   b   height  59
-## 3 modify_so(if (height &lt; mean(height)) height &lt;- mean(height))   c   height  60
-## 4 modify_so(if (height &lt; mean(height)) height &lt;- mean(height))   e   height  62
-## 5 modify_so(if (height &lt; mean(height)) height &lt;- mean(height))   f   height  63
-## 6 modify_so(if (height &lt; mean(height)) height &lt;- mean(height))   g   height  64
-##   new
-## 1  61
-## 2  61
-## 3  61
-## 4  61
-## 5  61
-## 6  61</code></pre>
-</div>
-<div id="current-limitations" class="section level3">
-<h3>Current limitations</h3>
-<p>Conditional statements including <code>else</code> are not supported yet. Rules containing <code>if() else</code> are ignored with a warning.</p>
-</div>
+<h2 id="importexport-of-rules-and-rule-metadata">Import/export of rules and rule metadata</h2>
+<p>The <code>dcmodify</code> package supports reading/writing rules from free text file, <code>yaml</code> files, or data frames. For example, consider the contents of the file <code>myrules.txt</code> (to try the following code, create such a file yourself).</p>
+<pre><code># myrules.txt
 
+# unit of measure error
+if (abs(consumption) &lt;= 1){
+  consumption &lt;- 1000*consumption
+}
 
-
-<!-- code folding -->
-
-
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
-
+# sign error
+if (consumption &lt; 0 ){
+  consumption &lt;- -1 * consumption
+}</code></pre>
+<p>Reading the rules is done with the <code>.file</code> argument.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="op">&gt;</span><span class="st"> </span>rules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="dt">.file =</span> <span class="st">&quot;myrules.txt&quot;</span>)</a>
+<a class="sourceLine" id="cb8-2" title="2"></a>
+<a class="sourceLine" id="cb8-3" title="3"><span class="op">&gt;</span><span class="st"> </span>rules</a>
+<a class="sourceLine" id="cb8-4" title="4">Object of class modifier with <span class="dv">2</span> elements<span class="op">:</span></a>
+<a class="sourceLine" id="cb8-5" title="5">M1<span class="op">:</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="st">  </span><span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb8-7" title="7">      consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
+<a class="sourceLine" id="cb8-8" title="8">  }</a>
+<a class="sourceLine" id="cb8-9" title="9"></a>
+<a class="sourceLine" id="cb8-10" title="10">M2<span class="op">:</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-11" title="11"><span class="st">  </span><span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb8-12" title="12">      consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a>
+<a class="sourceLine" id="cb8-13" title="13">  }</a></code></pre></div>
+<p>A second way to store rules is in <a href="https://yaml.org/">yaml</a> format. This allows one to add metadata to rules, including a name, label or description. To demonstrate this, we will write the rules to <code>yaml</code> file and print the file contents.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="op">&gt;</span><span class="st"> </span>fn &lt;-<span class="st"> </span><span class="kw">tempfile</span>()</a>
+<a class="sourceLine" id="cb9-2" title="2"></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="op">&gt;</span><span class="st"> </span><span class="kw">export_yaml</span>(rules, <span class="dt">file =</span> fn)</a>
+<a class="sourceLine" id="cb9-4" title="4"></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="op">&gt;</span><span class="st"> </span><span class="kw">cat</span>(<span class="kw">paste</span>(<span class="kw">readLines</span>(fn), <span class="dt">collapse =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>))</a>
+<a class="sourceLine" id="cb9-6" title="6">rules<span class="op">:</span></a>
+<a class="sourceLine" id="cb9-7" title="7"><span class="op">-</span><span class="st"> </span>expr<span class="op">:</span></a>
+<a class="sourceLine" id="cb9-8" title="8"><span class="st">  </span><span class="op">-</span><span class="st"> </span><span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb9-9" title="9">  <span class="op">-</span><span class="st"> &#39;    consumption &lt;- 1000 * consumption&#39;</span></a>
+<a class="sourceLine" id="cb9-10" title="10">  <span class="op">-</span><span class="st"> &#39;}&#39;</span></a>
+<a class="sourceLine" id="cb9-11" title="11">  name<span class="op">:</span><span class="st"> </span>M1</a>
+<a class="sourceLine" id="cb9-12" title="12">  label<span class="op">:</span><span class="st"> &#39;&#39;</span></a>
+<a class="sourceLine" id="cb9-13" title="13">  description<span class="op">:</span><span class="st"> &#39;&#39;</span></a>
+<a class="sourceLine" id="cb9-14" title="14">  created<span class="op">:</span><span class="st"> </span><span class="dv">2023-04-07</span> <span class="dv">16</span><span class="op">:</span><span class="dv">33</span><span class="op">:</span><span class="dv">00</span></a>
+<a class="sourceLine" id="cb9-15" title="15">  origin<span class="op">:</span><span class="st"> </span>myrules.txt</a>
+<a class="sourceLine" id="cb9-16" title="16">  meta<span class="op">:</span><span class="st"> </span>[]</a>
+<a class="sourceLine" id="cb9-17" title="17"><span class="op">-</span><span class="st"> </span>expr<span class="op">:</span></a>
+<a class="sourceLine" id="cb9-18" title="18"><span class="st">  </span><span class="op">-</span><span class="st"> </span><span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb9-19" title="19">  <span class="op">-</span><span class="st"> &#39;    consumption &lt;- -1 * consumption&#39;</span></a>
+<a class="sourceLine" id="cb9-20" title="20">  <span class="op">-</span><span class="st"> &#39;}&#39;</span></a>
+<a class="sourceLine" id="cb9-21" title="21">  name<span class="op">:</span><span class="st"> </span>M2</a>
+<a class="sourceLine" id="cb9-22" title="22">  label<span class="op">:</span><span class="st"> &#39;&#39;</span></a>
+<a class="sourceLine" id="cb9-23" title="23">  description<span class="op">:</span><span class="st"> &#39;&#39;</span></a>
+<a class="sourceLine" id="cb9-24" title="24">  created<span class="op">:</span><span class="st"> </span><span class="dv">2023-04-07</span> <span class="dv">16</span><span class="op">:</span><span class="dv">33</span><span class="op">:</span><span class="dv">00</span></a>
+<a class="sourceLine" id="cb9-25" title="25">  origin<span class="op">:</span><span class="st"> </span>myrules.txt</a>
+<a class="sourceLine" id="cb9-26" title="26">  meta<span class="op">:</span><span class="st"> </span>[]</a></code></pre></div>
+<p>Finally, it is possible to read rules from (and export to) data frame. A rule data frame must at least contain a <code>character</code> column named <code>rule</code>; all other columns are considered metadata.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="op">&gt;</span><span class="st"> </span>d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;U1&quot;</span>, <span class="st">&quot;S1&quot;</span>), <span class="dt">label =</span> <span class="kw">c</span>(<span class="st">&quot;Unit error&quot;</span>, </a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="op">+</span><span class="st">     &quot;sign error&quot;</span>))</a>
+<a class="sourceLine" id="cb10-3" title="3"></a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="op">&gt;</span><span class="st"> </span>d<span class="op">$</span>rule &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;if(abs(consumption)&lt;=1) consuption &lt;- 1000 * consumption&quot;</span>, </a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="op">+</span><span class="st">     &quot;if(consumption &lt; 0) consumption &lt;- -1 * consumption&quot;</span>)</a>
+<a class="sourceLine" id="cb10-6" title="6"></a>
+<a class="sourceLine" id="cb10-7" title="7"><span class="op">&gt;</span><span class="st"> </span>d</a>
+<a class="sourceLine" id="cb10-8" title="8">  name      label                                                     rule</a>
+<a class="sourceLine" id="cb10-9" title="9"><span class="dv">1</span>   U1 Unit error <span class="cf">if</span>(<span class="kw">abs</span>(consumption)<span class="op">&lt;=</span><span class="dv">1</span>) consuption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
+<a class="sourceLine" id="cb10-10" title="10"><span class="dv">2</span>   S1 sign error      <span class="cf">if</span>(consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a></code></pre></div>
+<p>Reading from data frame is done with the <code>.data</code> argument.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="op">&gt;</span><span class="st"> </span>myrules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="dt">.data =</span> d)</a>
+<a class="sourceLine" id="cb11-2" title="2"></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="op">&gt;</span><span class="st"> </span>myrules</a>
+<a class="sourceLine" id="cb11-4" title="4">Object of class modifier with <span class="dv">2</span> elements<span class="op">:</span></a>
+<a class="sourceLine" id="cb11-5" title="5">U1<span class="op">:</span><span class="st"> </span>Unit error</a>
+<a class="sourceLine" id="cb11-6" title="6">  <span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) consuption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
+<a class="sourceLine" id="cb11-7" title="7"></a>
+<a class="sourceLine" id="cb11-8" title="8">S1<span class="op">:</span><span class="st"> </span>sign error</a>
+<a class="sourceLine" id="cb11-9" title="9">  <span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a></code></pre></div>
+<h3 id="exercise">Exercise</h3>
+<p>Using the <code>retailers</code> dataset of the previous exercises, define a file with rules that</p>
+<ul>
+<li>fill missing <code>other.rev</code> with zero (0)</li>
+<li>detect large staff cost per staff ratios and reduces the staff costs accordingly (unit of measure is 1000s of EUR, while some records are expressed in EUR).</li>
+<li>Similar for total revenue and turnover.</li>
+</ul>
+<p>See <code>?retailers</code> for the meaning of the variables.</p>
+<h2 id="supported-rules">Supported rules</h2>
+<p>The package supports rules of the form</p>
+<pre><code>if (some condition holds){
+  change some existing values
+} </code></pre>
+<p>where the <code>else</code> clause is optional, and the rules are executed record-by-record. There may be multiple expressions in each <code>{}</code> block, and it is also allowed to have nested <code>if-else</code> statements.</p>
+<h2 id="tracking-changes">Tracking changes</h2>
+<p><code>dcmodify</code> allows rule-by-rule change tracking via integration with the <a href="https://cran.r-project.org/package=lumberjack">lumberjack</a> package[1]. There are many ways of following what happens to a data file, and we refere to [1] for an overview of the possibilities of the <code>lumberjack</code> package. Here we demonstrate how to use the cellwise logger, which logs all changes cell-by-cell.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="op">&gt;</span><span class="st"> </span><span class="kw">library</span>(lumberjack)</a>
+<a class="sourceLine" id="cb13-2" title="2"></a>
+<a class="sourceLine" id="cb13-3" title="3"><span class="op">&gt;</span><span class="st"> </span>lgr &lt;-<span class="st"> </span>cellwise<span class="op">$</span><span class="kw">new</span>(<span class="dt">key =</span> <span class="st">&quot;name&quot;</span>)</a>
+<a class="sourceLine" id="cb13-4" title="4"></a>
+<a class="sourceLine" id="cb13-5" title="5"><span class="op">&gt;</span><span class="st"> </span>rules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-6" title="6"><span class="op">+</span><span class="st">     </span>consumption, <span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption)</a>
+<a class="sourceLine" id="cb13-7" title="7"></a>
+<a class="sourceLine" id="cb13-8" title="8"><span class="op">&gt;</span><span class="st"> </span>out &lt;-<span class="st"> </span><span class="kw">modify</span>(water, rules, <span class="dt">logger =</span> lgr)</a>
+<a class="sourceLine" id="cb13-9" title="9"></a>
+<a class="sourceLine" id="cb13-10" title="10"><span class="op">&gt;</span><span class="st"> </span>logfile &lt;-<span class="st"> </span><span class="kw">tempfile</span>()</a>
+<a class="sourceLine" id="cb13-11" title="11"></a>
+<a class="sourceLine" id="cb13-12" title="12"><span class="op">&gt;</span><span class="st"> </span>lgr<span class="op">$</span><span class="kw">dump</span>(<span class="dt">file =</span> logfile)</a>
+<a class="sourceLine" id="cb13-13" title="13"></a>
+<a class="sourceLine" id="cb13-14" title="14"><span class="op">&gt;</span><span class="st"> </span><span class="kw">read.csv</span>(logfile)</a>
+<a class="sourceLine" id="cb13-15" title="15">  step                     time         srcref</a>
+<a class="sourceLine" id="cb13-16" title="16"><span class="dv">1</span>    <span class="dv">1</span> <span class="dv">2023-04-07</span> <span class="dv">16</span><span class="op">:</span><span class="dv">33</span><span class="op">:</span><span class="dv">00</span> CEST <span class="op">&lt;</span>modifier<span class="op">&gt;</span><span class="co">#1-1</span></a>
+<a class="sourceLine" id="cb13-17" title="17"><span class="dv">2</span>    <span class="dv">2</span> <span class="dv">2023-04-07</span> <span class="dv">16</span><span class="op">:</span><span class="dv">33</span><span class="op">:</span><span class="dv">00</span> CEST <span class="op">&lt;</span>modifier<span class="op">&gt;</span><span class="co">#2-2</span></a>
+<a class="sourceLine" id="cb13-18" title="18"><span class="st">                         </span>expression    key    variable     old new</a>
+<a class="sourceLine" id="cb13-19" title="19"><span class="dv">1</span> consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption Martin consumption    <span class="fl">0.15</span> <span class="dv">150</span></a>
+<a class="sourceLine" id="cb13-20" title="20"><span class="dv">2</span>   consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption  Simon consumption <span class="fl">-100.00</span> <span class="dv">100</span></a></code></pre></div>
+<h2 id="references">References</h2>
+<p>[1] van der Loo MPJ (2021). Monitoring Data in R with the lumberjack Package. <em>Journal of Statistical Software</em>, <strong>98</strong>(1), 1–13. <a href="https://doi.org/10.18637/jss.v098.i01">doi:10.18637/jss.v098.i01</a>.</p>
 </body>
 </html>

@@ -11,6 +11,11 @@
 \alias{description<-}
 \alias{label}
 \alias{label<-}
+\alias{do_by}
+\alias{mean_by}
+\alias{sum_by}
+\alias{max_by}
+\alias{min_by}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -18,6 +23,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{validate}{\code{\link[validate:export_yaml]{as_yaml}}, \code{\link[validate]{description}}, \code{\link[validate:description]{description<-}}, \code{\link[validate]{export_yaml}}, \code{\link[validate]{label}}, \code{\link[validate:label]{label<-}}, \code{\link[validate]{origin}}, \code{\link[validate:origin]{origin<-}}}
+  \item{validate}{\code{\link[validate:export_yaml]{as_yaml}}, \code{\link[validate]{description}}, \code{\link[validate:description]{description<-}}, \code{\link[validate]{do_by}}, \code{\link[validate]{export_yaml}}, \code{\link[validate]{label}}, \code{\link[validate:label]{label<-}}, \code{\link[validate:do_by]{max_by}}, \code{\link[validate:do_by]{mean_by}}, \code{\link[validate:do_by]{min_by}}, \code{\link[validate]{origin}}, \code{\link[validate:origin]{origin<-}}, \code{\link[validate:do_by]{sum_by}}}
 }}
 

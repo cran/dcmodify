@@ -5,9 +5,16 @@
 #' @keywords internal
 setRefClass("modifier"
     , contains = "expressionset"
+    , fields = c(
+        "source"
+    )
     , methods = list(
       show = function() show_modifier(.self)
-      , initialize = function(..., .file) ini_modifier(.self, ..., .file=.file)
+      , initialize = function(..., .file, .data){
+          obj <- ini_modifier(.self, ..., .file=.file, .data=.data)
+          obj$source <- if(!missing(.file)) .file else NULL
+          obj
+      }
       , assignments = 
         function(flatten = TRUE, dplyr_verbs = FALSE){
           guarded_assignments( .self
@@ -61,7 +68,12 @@ call2text <- function(cl){
 #'
 #'
 #' @param ... A comma-separated list of modification rules.
-#' @param .file A character vector of file locations.
+#' @param .file (optional) A character vector of file locations.
+#' @param .data (optional) A \code{data.frame} with at least a column \code{"rule"}
+#'        of type \code{character}. Optionally, the following columns of metadata
+#'        can be provided (all \code{character}, except \code{"created"} which 
+#'        should be \code{POSIXct}): \code{"name"}, 
+#'        \code{"label"}, \code{"description"}, \code{"origin"}, \code{"created"}.
 #'
 #' @return An object of class \code{modifier}.
 #'
@@ -72,16 +84,18 @@ call2text <- function(cl){
 #' 
 #' 
 #' @export
-modifier <- function(..., .file) new("modifier", ... , .file=.file)
+modifier <- function(..., .file, .data) new("modifier", ... , .file=.file, .data=.data)
 
 
 
 
-ini_modifier <- function(obj ,..., .file){
-  if ( missing(.file) ){
+ini_modifier <- function(obj ,..., .file, .data){
+  if ( missing(.file) && missing(.data)){
     validate::.ini_expressionset_cli(obj, ..., .prefix="M")
-  } else {
+  } else if (!missing(.file)) {
     validate::.ini_expressionset_yml(obj, file=.file, .prefix="M")
+  }else if (!missing(.data)) {
+    validate::.ini_expressionset_df(obj, dat=.data, .prefix="M")
   }
   
   i <- sapply(expr(obj),is_modifying)
@@ -91,7 +105,7 @@ ini_modifier <- function(obj ,..., .file){
     warning(paste0(
       "Invalid syntax detected. The following expressions have been ignored:",
       paste(err,collapse="") 
-      ))
+    ))
   }
   if ( length(i) > 0 ){
     obj$rules <- obj$rules[i]
@@ -125,7 +139,7 @@ is_modifying <- function(cl){
 #' Modify a data set
 #'
 #' @param dat An R object carrying data
-#' @param x An R object carrying modififying rules
+#' @param x An R object carrying modifying rules
 #' @param ... Options.
 #'
 #' @export

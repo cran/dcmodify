@@ -14,7 +14,7 @@ sets.
 
 The general workflow in \code{dcmodify} follows the following pattern.
 \itemize{
-  \item Define or read a set of rules with \code{\link{modifier}}. 
+  \item Define or read a set of rules with \code{\link{modifier}}.
   \item \code{\link{modify}} data with the modification rules.
   \item Examine the results either graphically or by summary.
 }
