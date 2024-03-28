@@ -26,3 +26,26 @@ introductory vignette
 
 \code{vignette("introduction",package="dcmodify")}
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/data-cleaning/dcmodify}
+  \item Report bugs at \url{https://github.com/data-cleaning/dcmodify/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Mark van der Loo \email{mark.vanderloo@gmail.com} (\href{https://orcid.org/0000-0002-9807-4686}{ORCID})
+
+Authors:
+\itemize{
+  \item Edwin de Jonge (\href{https://orcid.org/0000-0002-6580-4718}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Sjabbo Schaveling [contributor]
+  \item Floris Ruijter [contributor]
+}
+
+}

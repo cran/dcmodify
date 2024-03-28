@@ -2,17 +2,28 @@
 % Please edit documentation in R/modifier.R, R/modify.R
 \name{modify}
 \alias{modify}
-\alias{modify,data.frame,modifier-method}
+\alias{modify,data.frame,modifier,environment-method}
+\alias{modify,data.frame,modifier,ANY-method}
+\alias{modify,data.frame,modifier,data.frame-method}
+\alias{modify,data.frame,modifier,list-method}
 \title{Modify a data set}
 \usage{
-modify(dat, x, ...)
+modify(dat, x, ref, ...)
 
-\S4method{modify}{data.frame,modifier}(dat, x, logger = NULL, ...)
+\S4method{modify}{data.frame,modifier,environment}(dat, x, ref, logger = NULL, ...)
+
+\S4method{modify}{data.frame,modifier,ANY}(dat, x, logger = NULL, ...)
+
+\S4method{modify}{data.frame,modifier,data.frame}(dat, x, ref, logger = NULL, ...)
+
+\S4method{modify}{data.frame,modifier,list}(dat, x, ref, logger = NULL, ...)
 }
 \arguments{
 \item{dat}{A \code{data.frame}}
 
 \item{x}{A \code{modifier} object containing modifying rules.}
+
+\item{ref}{A \code{environment}}
 
 \item{...}{Extra arguments.}
 

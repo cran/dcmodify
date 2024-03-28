@@ -53,6 +53,24 @@ myrules <- modifier(.data=d)
 myrules
 
 # <unlabeled code block>
+dat <- data.frame(x=seq_len(nrow(women)))
+m   <- modifier(if (x > 2) x <- ref$height/2)
+out <- modify(dat, m, ref=women)
+head(out)
+
+# <unlabeled code block>
+m   <- modifier(if (x > 2) x <- women$height/2)
+out <- modify(dat, m, ref=list(women=women))
+head(out,3)
+
+# <unlabeled code block>
+e <- new.env()
+e$women <- women
+m   <- modifier(if (x > 2) x <- women$height/2)
+out <- modify(dat, m, ref=e)
+head(out,3)
+
+# <unlabeled code block>
 library(lumberjack)
 # create a logger (see ?cellwise)
 lgr <- cellwise$new(key="name")

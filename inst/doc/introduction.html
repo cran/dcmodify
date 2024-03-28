@@ -150,7 +150,7 @@ color: #ee8c70; }
 %\VignetteIndexEntry{Introduction to dcmodify}
 -->
 <p><em>Rule-based data processing for data cleaning.</em></p>
-<p>Package version 0.8.0.</p>
+<p>Package version 0.9.0.</p>
 <p>Please use <code>citation(&quot;dcmodify&quot;)</code> to cite the package.</p>
 <h2 id="introduction">Introduction</h2>
 <p>The <code>dcmodify</code> package allows users to declare (conditional) data processing steps without hard-coding them in an R script.</p>
@@ -160,25 +160,26 @@ color: #ee8c70; }
 <p>The motivating use case is where domain experts need to frequently update (fix) values of a data set depending on data conditions. Such updates require (1) selecting the cases where the conditions apply, and (2) updating the values.</p>
 <h3 id="example">Example</h3>
 <p>We create a dataset where we asked some imaginary respondents about their average water consumption per day.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="op">&gt;</span><span class="st"> </span>water &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;Ross&quot;</span>, <span class="st">&quot;Robert&quot;</span>, <span class="st">&quot;Martin&quot;</span>, </a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="op">+</span><span class="st">     &quot;Brian&quot;</span>, <span class="st">&quot;Simon&quot;</span>), <span class="dt">consumption =</span> <span class="kw">c</span>(<span class="dv">110</span>, <span class="dv">105</span>, <span class="fl">0.15</span>, <span class="dv">95</span>, <span class="dv">-100</span>))</a>
-<a class="sourceLine" id="cb1-3" title="3"></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="op">&gt;</span><span class="st"> </span>water</a>
-<a class="sourceLine" id="cb1-5" title="5">    name consumption</a>
-<a class="sourceLine" id="cb1-6" title="6"><span class="dv">1</span>   Ross      <span class="fl">110.00</span></a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="dv">2</span> Robert      <span class="fl">105.00</span></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="dv">3</span> Martin        <span class="fl">0.15</span></a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="dv">4</span>  Brian       <span class="fl">95.00</span></a>
-<a class="sourceLine" id="cb1-10" title="10"><span class="dv">5</span>  Simon     <span class="fl">-100.00</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="op">&gt;</span><span class="st"> </span>water &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="op">+</span><span class="st">    </span><span class="dt">name        =</span> <span class="kw">c</span>(<span class="st">&quot;Ross&quot;</span>, <span class="st">&quot;Robert&quot;</span>, <span class="st">&quot;Martin&quot;</span>, <span class="st">&quot;Brian&quot;</span>, <span class="st">&quot;Simon&quot;</span>)</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="op">+</span><span class="st">  </span>, <span class="dt">consumption =</span> <span class="kw">c</span>(<span class="dv">110</span>, <span class="dv">105</span>, <span class="fl">0.15</span>, <span class="dv">95</span>, <span class="dv">-100</span>) </a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="op">+</span><span class="st"> </span>)</a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="op">&gt;</span><span class="st"> </span>water</a>
+<a class="sourceLine" id="cb1-6" title="6">    name consumption</a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="dv">1</span>   Ross      <span class="fl">110.00</span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="dv">2</span> Robert      <span class="fl">105.00</span></a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="dv">3</span> Martin        <span class="fl">0.15</span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="dv">4</span>  Brian       <span class="fl">95.00</span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="dv">5</span>  Simon     <span class="fl">-100.00</span></a></code></pre></div>
 <p>Here, Martin submitted his water consumption in m<sup>3</sup> while the others responded in liters. Such a unit of measure error can be detected and fixed. Simon took the engineering approach, interpreted consumption as a <em>sink</em>, and put a negative sign in front of his answer. Again, this is a data error that can be detected and fixed easily.</p>
 <p>If such errors occur frequently, it makes sense to store the treatment. In <code>dcmodify</code> this can be solved as follows.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="op">&gt;</span><span class="st"> </span><span class="kw">library</span>(dcmodify)</a>
-<a class="sourceLine" id="cb2-2" title="2"></a>
-<a class="sourceLine" id="cb2-3" title="3"><span class="op">&gt;</span><span class="st"> </span>rules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="op">+</span><span class="st">     </span>consumption, <span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption)</a>
-<a class="sourceLine" id="cb2-5" title="5"></a>
-<a class="sourceLine" id="cb2-6" title="6"><span class="op">&gt;</span><span class="st"> </span>out &lt;-<span class="st"> </span><span class="kw">modify</span>(water, rules)</a>
-<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="op">&gt;</span><span class="st"> </span><span class="co"># define a rule set (here with one rule)</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="er">&gt;</span><span class="st"> </span>rules &lt;-<span class="st"> </span><span class="kw">modifier</span>(</a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="op">+</span><span class="st">           </span><span class="cf">if</span> ( <span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span> ) consumption &lt;-<span class="st"> </span><span class="dv">1000</span><span class="op">*</span>consumption  </a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="op">+</span><span class="st">         </span>, <span class="cf">if</span> ( consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span> ) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption )  </a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="op">&gt;</span><span class="st"> </span><span class="co"># apply the ruleset to the data</span></a>
+<a class="sourceLine" id="cb2-7" title="7"><span class="er">&gt;</span><span class="st"> </span>out &lt;-<span class="st"> </span><span class="kw">modify</span>(water, rules)</a>
 <a class="sourceLine" id="cb2-8" title="8"><span class="op">&gt;</span><span class="st"> </span>out</a>
 <a class="sourceLine" id="cb2-9" title="9">    name consumption</a>
 <a class="sourceLine" id="cb2-10" title="10"><span class="dv">1</span>   Ross         <span class="dv">110</span></a>
@@ -229,25 +230,24 @@ if (consumption &lt; 0 ){
   consumption &lt;- -1 * consumption
 }</code></pre>
 <p>Reading the rules is done with the <code>.file</code> argument.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="op">&gt;</span><span class="st"> </span>rules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="dt">.file =</span> <span class="st">&quot;myrules.txt&quot;</span>)</a>
-<a class="sourceLine" id="cb8-2" title="2"></a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="op">&gt;</span><span class="st"> </span>rules</a>
-<a class="sourceLine" id="cb8-4" title="4">Object of class modifier with <span class="dv">2</span> elements<span class="op">:</span></a>
-<a class="sourceLine" id="cb8-5" title="5">M1<span class="op">:</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="st">  </span><span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) {</a>
-<a class="sourceLine" id="cb8-7" title="7">      consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
-<a class="sourceLine" id="cb8-8" title="8">  }</a>
-<a class="sourceLine" id="cb8-9" title="9"></a>
-<a class="sourceLine" id="cb8-10" title="10">M2<span class="op">:</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb8-11" title="11"><span class="st">  </span><span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) {</a>
-<a class="sourceLine" id="cb8-12" title="12">      consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a>
-<a class="sourceLine" id="cb8-13" title="13">  }</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="op">&gt;</span><span class="st"> </span>rules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="dt">.file=</span><span class="st">&quot;myrules.txt&quot;</span>)</a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="op">&gt;</span><span class="st"> </span>rules</a>
+<a class="sourceLine" id="cb8-3" title="3">Object of class modifier with <span class="dv">2</span> elements<span class="op">:</span></a>
+<a class="sourceLine" id="cb8-4" title="4">M1<span class="op">:</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="st">  </span><span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb8-6" title="6">      consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
+<a class="sourceLine" id="cb8-7" title="7">  }</a>
+<a class="sourceLine" id="cb8-8" title="8"></a>
+<a class="sourceLine" id="cb8-9" title="9">M2<span class="op">:</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb8-10" title="10"><span class="st">  </span><span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) {</a>
+<a class="sourceLine" id="cb8-11" title="11">      consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a>
+<a class="sourceLine" id="cb8-12" title="12">  }</a></code></pre></div>
 <p>A second way to store rules is in <a href="https://yaml.org/">yaml</a> format. This allows one to add metadata to rules, including a name, label or description. To demonstrate this, we will write the rules to <code>yaml</code> file and print the file contents.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="op">&gt;</span><span class="st"> </span>fn &lt;-<span class="st"> </span><span class="kw">tempfile</span>()</a>
-<a class="sourceLine" id="cb9-2" title="2"></a>
-<a class="sourceLine" id="cb9-3" title="3"><span class="op">&gt;</span><span class="st"> </span><span class="kw">export_yaml</span>(rules, <span class="dt">file =</span> fn)</a>
-<a class="sourceLine" id="cb9-4" title="4"></a>
-<a class="sourceLine" id="cb9-5" title="5"><span class="op">&gt;</span><span class="st"> </span><span class="kw">cat</span>(<span class="kw">paste</span>(<span class="kw">readLines</span>(fn), <span class="dt">collapse =</span> <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>))</a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="op">&gt;</span><span class="st"> </span><span class="co"># export rules to yaml format</span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="er">&gt;</span><span class="st"> </span><span class="kw">export_yaml</span>(rules,<span class="dt">file=</span>fn)</a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="op">&gt;</span><span class="st"> </span><span class="co"># print file contents</span></a>
+<a class="sourceLine" id="cb9-5" title="5"><span class="er">&gt;</span><span class="st"> </span><span class="kw">readLines</span>(fn) <span class="op">|</span><span class="er">&gt;</span><span class="st"> </span><span class="kw">paste</span>(<span class="dt">collapse=</span><span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>) <span class="op">|</span><span class="er">&gt;</span><span class="st"> </span><span class="kw">cat</span>()</a>
 <a class="sourceLine" id="cb9-6" title="6">rules<span class="op">:</span></a>
 <a class="sourceLine" id="cb9-7" title="7"><span class="op">-</span><span class="st"> </span>expr<span class="op">:</span></a>
 <a class="sourceLine" id="cb9-8" title="8"><span class="st">  </span><span class="op">-</span><span class="st"> </span><span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) {</a>
@@ -256,7 +256,7 @@ if (consumption &lt; 0 ){
 <a class="sourceLine" id="cb9-11" title="11">  name<span class="op">:</span><span class="st"> </span>M1</a>
 <a class="sourceLine" id="cb9-12" title="12">  label<span class="op">:</span><span class="st"> &#39;&#39;</span></a>
 <a class="sourceLine" id="cb9-13" title="13">  description<span class="op">:</span><span class="st"> &#39;&#39;</span></a>
-<a class="sourceLine" id="cb9-14" title="14">  created<span class="op">:</span><span class="st"> </span><span class="dv">2023-04-07</span> <span class="dv">16</span><span class="op">:</span><span class="dv">33</span><span class="op">:</span><span class="dv">00</span></a>
+<a class="sourceLine" id="cb9-14" title="14">  created<span class="op">:</span><span class="st"> </span><span class="dv">2024-03-27</span> <span class="dv">16</span><span class="op">:</span><span class="dv">07</span><span class="op">:</span><span class="fl">30.73769</span></a>
 <a class="sourceLine" id="cb9-15" title="15">  origin<span class="op">:</span><span class="st"> </span>myrules.txt</a>
 <a class="sourceLine" id="cb9-16" title="16">  meta<span class="op">:</span><span class="st"> </span>[]</a>
 <a class="sourceLine" id="cb9-17" title="17"><span class="op">-</span><span class="st"> </span>expr<span class="op">:</span></a>
@@ -266,30 +266,31 @@ if (consumption &lt; 0 ){
 <a class="sourceLine" id="cb9-21" title="21">  name<span class="op">:</span><span class="st"> </span>M2</a>
 <a class="sourceLine" id="cb9-22" title="22">  label<span class="op">:</span><span class="st"> &#39;&#39;</span></a>
 <a class="sourceLine" id="cb9-23" title="23">  description<span class="op">:</span><span class="st"> &#39;&#39;</span></a>
-<a class="sourceLine" id="cb9-24" title="24">  created<span class="op">:</span><span class="st"> </span><span class="dv">2023-04-07</span> <span class="dv">16</span><span class="op">:</span><span class="dv">33</span><span class="op">:</span><span class="dv">00</span></a>
+<a class="sourceLine" id="cb9-24" title="24">  created<span class="op">:</span><span class="st"> </span><span class="dv">2024-03-27</span> <span class="dv">16</span><span class="op">:</span><span class="dv">07</span><span class="op">:</span><span class="fl">30.73769</span></a>
 <a class="sourceLine" id="cb9-25" title="25">  origin<span class="op">:</span><span class="st"> </span>myrules.txt</a>
 <a class="sourceLine" id="cb9-26" title="26">  meta<span class="op">:</span><span class="st"> </span>[]</a></code></pre></div>
 <p>Finally, it is possible to read rules from (and export to) data frame. A rule data frame must at least contain a <code>character</code> column named <code>rule</code>; all other columns are considered metadata.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="op">&gt;</span><span class="st"> </span>d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;U1&quot;</span>, <span class="st">&quot;S1&quot;</span>), <span class="dt">label =</span> <span class="kw">c</span>(<span class="st">&quot;Unit error&quot;</span>, </a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="op">+</span><span class="st">     &quot;sign error&quot;</span>))</a>
-<a class="sourceLine" id="cb10-3" title="3"></a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="op">&gt;</span><span class="st"> </span>d<span class="op">$</span>rule &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;if(abs(consumption)&lt;=1) consuption &lt;- 1000 * consumption&quot;</span>, </a>
-<a class="sourceLine" id="cb10-5" title="5"><span class="op">+</span><span class="st">     &quot;if(consumption &lt; 0) consumption &lt;- -1 * consumption&quot;</span>)</a>
-<a class="sourceLine" id="cb10-6" title="6"></a>
-<a class="sourceLine" id="cb10-7" title="7"><span class="op">&gt;</span><span class="st"> </span>d</a>
-<a class="sourceLine" id="cb10-8" title="8">  name      label                                                     rule</a>
-<a class="sourceLine" id="cb10-9" title="9"><span class="dv">1</span>   U1 Unit error <span class="cf">if</span>(<span class="kw">abs</span>(consumption)<span class="op">&lt;=</span><span class="dv">1</span>) consuption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
-<a class="sourceLine" id="cb10-10" title="10"><span class="dv">2</span>   S1 sign error      <span class="cf">if</span>(consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="op">&gt;</span><span class="st"> </span>d &lt;-<span class="st"> </span><span class="kw">data.frame</span>(</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="op">+</span><span class="st">     </span><span class="dt">name =</span> <span class="kw">c</span>(<span class="st">&quot;U1&quot;</span>,<span class="st">&quot;S1&quot;</span>)</a>
+<a class="sourceLine" id="cb10-3" title="3"><span class="op">+</span><span class="st">   </span>, <span class="dt">label =</span> <span class="kw">c</span>(<span class="st">&quot;Unit error&quot;</span>, <span class="st">&quot;sign error&quot;</span>)</a>
+<a class="sourceLine" id="cb10-4" title="4"><span class="op">+</span><span class="st"> </span>)</a>
+<a class="sourceLine" id="cb10-5" title="5"><span class="op">&gt;</span><span class="st"> </span>d<span class="op">$</span>rule &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="op">+</span><span class="st">    &quot;if(abs(consumption)&lt;=1) consuption &lt;- 1000 * consumption&quot;</span></a>
+<a class="sourceLine" id="cb10-7" title="7"><span class="op">+</span><span class="st">   </span>,<span class="st">&quot;if(consumption &lt; 0) consumption &lt;- -1 * consumption&quot;</span></a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="op">+</span><span class="st"> </span>)</a>
+<a class="sourceLine" id="cb10-9" title="9"><span class="op">&gt;</span><span class="st"> </span>d</a>
+<a class="sourceLine" id="cb10-10" title="10">  name      label                                                     rule</a>
+<a class="sourceLine" id="cb10-11" title="11"><span class="dv">1</span>   U1 Unit error <span class="cf">if</span>(<span class="kw">abs</span>(consumption)<span class="op">&lt;=</span><span class="dv">1</span>) consuption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
+<a class="sourceLine" id="cb10-12" title="12"><span class="dv">2</span>   S1 sign error      <span class="cf">if</span>(consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a></code></pre></div>
 <p>Reading from data frame is done with the <code>.data</code> argument.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="op">&gt;</span><span class="st"> </span>myrules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="dt">.data =</span> d)</a>
-<a class="sourceLine" id="cb11-2" title="2"></a>
-<a class="sourceLine" id="cb11-3" title="3"><span class="op">&gt;</span><span class="st"> </span>myrules</a>
-<a class="sourceLine" id="cb11-4" title="4">Object of class modifier with <span class="dv">2</span> elements<span class="op">:</span></a>
-<a class="sourceLine" id="cb11-5" title="5">U1<span class="op">:</span><span class="st"> </span>Unit error</a>
-<a class="sourceLine" id="cb11-6" title="6">  <span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) consuption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
-<a class="sourceLine" id="cb11-7" title="7"></a>
-<a class="sourceLine" id="cb11-8" title="8">S1<span class="op">:</span><span class="st"> </span>sign error</a>
-<a class="sourceLine" id="cb11-9" title="9">  <span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="op">&gt;</span><span class="st"> </span>myrules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="dt">.data=</span>d)</a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="op">&gt;</span><span class="st"> </span>myrules</a>
+<a class="sourceLine" id="cb11-3" title="3">Object of class modifier with <span class="dv">2</span> elements<span class="op">:</span></a>
+<a class="sourceLine" id="cb11-4" title="4">U1<span class="op">:</span><span class="st"> </span>Unit error</a>
+<a class="sourceLine" id="cb11-5" title="5">  <span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) consuption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption</a>
+<a class="sourceLine" id="cb11-6" title="6"></a>
+<a class="sourceLine" id="cb11-7" title="7">S1<span class="op">:</span><span class="st"> </span>sign error</a>
+<a class="sourceLine" id="cb11-8" title="8">  <span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption</a></code></pre></div>
 <h3 id="exercise">Exercise</h3>
 <p>Using the <code>retailers</code> dataset of the previous exercises, define a file with rules that</p>
 <ul>
@@ -298,6 +299,37 @@ if (consumption &lt; 0 ){
 <li>Similar for total revenue and turnover.</li>
 </ul>
 <p>See <code>?retailers</code> for the meaning of the variables.</p>
+<h2 id="using-reference-data">Using reference data</h2>
+<p>It is possible to use data not in the treated dataset in your data modification rules. This so-called reference data needs to be added in the call to <code>modify()</code>.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="op">&gt;</span><span class="st"> </span>dat &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">x=</span><span class="kw">seq_len</span>(<span class="kw">nrow</span>(women)))</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="op">&gt;</span><span class="st"> </span>m   &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="cf">if</span> (x <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>) x &lt;-<span class="st"> </span>ref<span class="op">$</span>height<span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="op">&gt;</span><span class="st"> </span>out &lt;-<span class="st"> </span><span class="kw">modify</span>(dat, m, <span class="dt">ref=</span>women)</a>
+<a class="sourceLine" id="cb12-4" title="4"><span class="op">&gt;</span><span class="st"> </span><span class="kw">head</span>(out)</a>
+<a class="sourceLine" id="cb12-5" title="5">     x</a>
+<a class="sourceLine" id="cb12-6" title="6"><span class="dv">1</span>  <span class="fl">1.0</span></a>
+<a class="sourceLine" id="cb12-7" title="7"><span class="dv">2</span>  <span class="fl">2.0</span></a>
+<a class="sourceLine" id="cb12-8" title="8"><span class="dv">3</span> <span class="fl">30.0</span></a>
+<a class="sourceLine" id="cb12-9" title="9"><span class="dv">4</span> <span class="fl">30.5</span></a>
+<a class="sourceLine" id="cb12-10" title="10"><span class="dv">5</span> <span class="fl">31.0</span></a>
+<a class="sourceLine" id="cb12-11" title="11"><span class="dv">6</span> <span class="fl">31.5</span></a></code></pre></div>
+<p>Note that in this form, it is necessary to use <code>ref$</code> to refer to the <code>women</code> dataset in the context of modifying rules. This can be customized by passing the reference data as a named list or environment.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="op">&gt;</span><span class="st"> </span>m   &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="cf">if</span> (x <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>) x &lt;-<span class="st"> </span>women<span class="op">$</span>height<span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="op">&gt;</span><span class="st"> </span>out &lt;-<span class="st"> </span><span class="kw">modify</span>(dat, m, <span class="dt">ref=</span><span class="kw">list</span>(<span class="dt">women=</span>women))</a>
+<a class="sourceLine" id="cb13-3" title="3"><span class="op">&gt;</span><span class="st"> </span><span class="kw">head</span>(out,<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb13-4" title="4">   x</a>
+<a class="sourceLine" id="cb13-5" title="5"><span class="dv">1</span>  <span class="dv">1</span></a>
+<a class="sourceLine" id="cb13-6" title="6"><span class="dv">2</span>  <span class="dv">2</span></a>
+<a class="sourceLine" id="cb13-7" title="7"><span class="dv">3</span> <span class="dv">30</span></a></code></pre></div>
+<p>Or, equivalently</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="op">&gt;</span><span class="st"> </span>e &lt;-<span class="st"> </span><span class="kw">new.env</span>()</a>
+<a class="sourceLine" id="cb14-2" title="2"><span class="op">&gt;</span><span class="st"> </span>e<span class="op">$</span>women &lt;-<span class="st"> </span>women</a>
+<a class="sourceLine" id="cb14-3" title="3"><span class="op">&gt;</span><span class="st"> </span>m   &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="cf">if</span> (x <span class="op">&gt;</span><span class="st"> </span><span class="dv">2</span>) x &lt;-<span class="st"> </span>women<span class="op">$</span>height<span class="op">/</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb14-4" title="4"><span class="op">&gt;</span><span class="st"> </span>out &lt;-<span class="st"> </span><span class="kw">modify</span>(dat, m, <span class="dt">ref=</span>e)</a>
+<a class="sourceLine" id="cb14-5" title="5"><span class="op">&gt;</span><span class="st"> </span><span class="kw">head</span>(out,<span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb14-6" title="6">   x</a>
+<a class="sourceLine" id="cb14-7" title="7"><span class="dv">1</span>  <span class="dv">1</span></a>
+<a class="sourceLine" id="cb14-8" title="8"><span class="dv">2</span>  <span class="dv">2</span></a>
+<a class="sourceLine" id="cb14-9" title="9"><span class="dv">3</span> <span class="dv">30</span></a></code></pre></div>
 <h2 id="supported-rules">Supported rules</h2>
 <p>The package supports rules of the form</p>
 <pre><code>if (some condition holds){
@@ -306,26 +338,29 @@ if (consumption &lt; 0 ){
 <p>where the <code>else</code> clause is optional, and the rules are executed record-by-record. There may be multiple expressions in each <code>{}</code> block, and it is also allowed to have nested <code>if-else</code> statements.</p>
 <h2 id="tracking-changes">Tracking changes</h2>
 <p><code>dcmodify</code> allows rule-by-rule change tracking via integration with the <a href="https://cran.r-project.org/package=lumberjack">lumberjack</a> package[1]. There are many ways of following what happens to a data file, and we refere to [1] for an overview of the possibilities of the <code>lumberjack</code> package. Here we demonstrate how to use the cellwise logger, which logs all changes cell-by-cell.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="op">&gt;</span><span class="st"> </span><span class="kw">library</span>(lumberjack)</a>
-<a class="sourceLine" id="cb13-2" title="2"></a>
-<a class="sourceLine" id="cb13-3" title="3"><span class="op">&gt;</span><span class="st"> </span>lgr &lt;-<span class="st"> </span>cellwise<span class="op">$</span><span class="kw">new</span>(<span class="dt">key =</span> <span class="st">&quot;name&quot;</span>)</a>
-<a class="sourceLine" id="cb13-4" title="4"></a>
-<a class="sourceLine" id="cb13-5" title="5"><span class="op">&gt;</span><span class="st"> </span>rules &lt;-<span class="st"> </span><span class="kw">modifier</span>(<span class="cf">if</span> (<span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb13-6" title="6"><span class="op">+</span><span class="st">     </span>consumption, <span class="cf">if</span> (consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span>) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption)</a>
-<a class="sourceLine" id="cb13-7" title="7"></a>
-<a class="sourceLine" id="cb13-8" title="8"><span class="op">&gt;</span><span class="st"> </span>out &lt;-<span class="st"> </span><span class="kw">modify</span>(water, rules, <span class="dt">logger =</span> lgr)</a>
-<a class="sourceLine" id="cb13-9" title="9"></a>
-<a class="sourceLine" id="cb13-10" title="10"><span class="op">&gt;</span><span class="st"> </span>logfile &lt;-<span class="st"> </span><span class="kw">tempfile</span>()</a>
-<a class="sourceLine" id="cb13-11" title="11"></a>
-<a class="sourceLine" id="cb13-12" title="12"><span class="op">&gt;</span><span class="st"> </span>lgr<span class="op">$</span><span class="kw">dump</span>(<span class="dt">file =</span> logfile)</a>
-<a class="sourceLine" id="cb13-13" title="13"></a>
-<a class="sourceLine" id="cb13-14" title="14"><span class="op">&gt;</span><span class="st"> </span><span class="kw">read.csv</span>(logfile)</a>
-<a class="sourceLine" id="cb13-15" title="15">  step                     time         srcref</a>
-<a class="sourceLine" id="cb13-16" title="16"><span class="dv">1</span>    <span class="dv">1</span> <span class="dv">2023-04-07</span> <span class="dv">16</span><span class="op">:</span><span class="dv">33</span><span class="op">:</span><span class="dv">00</span> CEST <span class="op">&lt;</span>modifier<span class="op">&gt;</span><span class="co">#1-1</span></a>
-<a class="sourceLine" id="cb13-17" title="17"><span class="dv">2</span>    <span class="dv">2</span> <span class="dv">2023-04-07</span> <span class="dv">16</span><span class="op">:</span><span class="dv">33</span><span class="op">:</span><span class="dv">00</span> CEST <span class="op">&lt;</span>modifier<span class="op">&gt;</span><span class="co">#2-2</span></a>
-<a class="sourceLine" id="cb13-18" title="18"><span class="st">                         </span>expression    key    variable     old new</a>
-<a class="sourceLine" id="cb13-19" title="19"><span class="dv">1</span> consumption &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="op">*</span><span class="st"> </span>consumption Martin consumption    <span class="fl">0.15</span> <span class="dv">150</span></a>
-<a class="sourceLine" id="cb13-20" title="20"><span class="dv">2</span>   consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption  Simon consumption <span class="fl">-100.00</span> <span class="dv">100</span></a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="op">&gt;</span><span class="st"> </span><span class="kw">library</span>(lumberjack)</a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="op">&gt;</span><span class="st"> </span><span class="co"># create a logger (see ?cellwise)</span></a>
+<a class="sourceLine" id="cb16-3" title="3"><span class="er">&gt;</span><span class="st"> </span>lgr &lt;-<span class="st"> </span>cellwise<span class="op">$</span><span class="kw">new</span>(<span class="dt">key=</span><span class="st">&quot;name&quot;</span>)</a>
+<a class="sourceLine" id="cb16-4" title="4"><span class="op">&gt;</span><span class="st"> </span><span class="co"># create rules</span></a>
+<a class="sourceLine" id="cb16-5" title="5"><span class="er">&gt;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb16-6" title="6"><span class="er">&gt;</span><span class="st"> </span>rules &lt;-<span class="st"> </span><span class="kw">modifier</span>(</a>
+<a class="sourceLine" id="cb16-7" title="7"><span class="op">+</span><span class="st">           </span><span class="cf">if</span> ( <span class="kw">abs</span>(consumption) <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span> ) consumption &lt;-<span class="st"> </span><span class="dv">1000</span><span class="op">*</span>consumption  </a>
+<a class="sourceLine" id="cb16-8" title="8"><span class="op">+</span><span class="st">         </span>, <span class="cf">if</span> ( consumption <span class="op">&lt;</span><span class="st"> </span><span class="dv">0</span> ) consumption &lt;-<span class="st"> </span><span class="dv">-1</span> <span class="op">*</span><span class="st"> </span>consumption )  </a>
+<a class="sourceLine" id="cb16-9" title="9"><span class="op">&gt;</span><span class="st"> </span><span class="co"># apply rules, and pass logger object to modify()</span></a>
+<a class="sourceLine" id="cb16-10" title="10"><span class="er">&gt;</span><span class="st"> </span>out &lt;-<span class="st"> </span><span class="kw">modify</span>(water, rules, <span class="dt">logger=</span>lgr)</a>
+<a class="sourceLine" id="cb16-11" title="11"><span class="op">&gt;</span><span class="st"> </span><span class="co"># check what happened, by dumping the log and reading in </span></a>
+<a class="sourceLine" id="cb16-12" title="12"><span class="er">&gt;</span><span class="st"> </span><span class="co"># the csv.</span></a>
+<a class="sourceLine" id="cb16-13" title="13"><span class="er">&gt;</span><span class="st"> </span>logfile &lt;-<span class="st"> </span><span class="kw">tempfile</span>()</a>
+<a class="sourceLine" id="cb16-14" title="14"><span class="op">&gt;</span><span class="st"> </span>lgr<span class="op">$</span><span class="kw">dump</span>(<span class="dt">file=</span>logfile)</a>
+<a class="sourceLine" id="cb16-15" title="15">Dumped a log at <span class="op">/</span>tmp<span class="op">/</span>RtmpSEKmUk<span class="op">/</span>file55745013dd2f</a>
+<a class="sourceLine" id="cb16-16" title="16"> </a>
+<a class="sourceLine" id="cb16-17" title="17"><span class="op">&gt;</span><span class="st"> </span><span class="kw">read.csv</span>(logfile)</a>
+<a class="sourceLine" id="cb16-18" title="18">  step                    time         srcref                        expression</a>
+<a class="sourceLine" id="cb16-19" title="19"><span class="dv">1</span>    <span class="dv">1</span> <span class="dv">2024-03-27</span> <span class="dv">16</span><span class="op">:</span><span class="dv">07</span><span class="op">:</span><span class="dv">30</span> CET <span class="op">&lt;</span>modifier<span class="op">&gt;</span><span class="co">#1-1 consumption &lt;- 1000 * consumption</span></a>
+<a class="sourceLine" id="cb16-20" title="20"><span class="dv">2</span>    <span class="dv">2</span> <span class="dv">2024-03-27</span> <span class="dv">16</span><span class="op">:</span><span class="dv">07</span><span class="op">:</span><span class="dv">30</span> CET <span class="op">&lt;</span>modifier<span class="op">&gt;</span><span class="co">#2-2   consumption &lt;- -1 * consumption</span></a>
+<a class="sourceLine" id="cb16-21" title="21"><span class="st">     </span>key    variable     old new</a>
+<a class="sourceLine" id="cb16-22" title="22"><span class="dv">1</span> Martin consumption    <span class="fl">0.15</span> <span class="dv">150</span></a>
+<a class="sourceLine" id="cb16-23" title="23"><span class="dv">2</span>  Simon consumption <span class="fl">-100.00</span> <span class="dv">100</span></a></code></pre></div>
 <h2 id="references">References</h2>
 <p>[1] van der Loo MPJ (2021). Monitoring Data in R with the lumberjack Package. <em>Journal of Statistical Software</em>, <strong>98</strong>(1), 1–13. <a href="https://doi.org/10.18637/jss.v098.i01">doi:10.18637/jss.v098.i01</a>.</p>
 </body>
